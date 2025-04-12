@@ -1,0 +1,274 @@
+ @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary-50: 236 253 245;
+    --color-primary-100: 209 250 229;
+    --color-primary-200: 167 243 208;
+    --color-primary-300: 110 231 183;
+    --color-primary-400: 52 211 153;
+    --color-primary-500: 16 185 129;
+    --color-primary-600: 5 150 105;
+    --color-primary-700: 4 120 87;
+    --color-primary-800: 6 95 70;
+    --color-primary-900: 6 78 59;
+    
+    --color-secondary-50: 239 246 255;
+    --color-secondary-100: 219 234 254;
+    --color-secondary-200: 191 219 254;
+    --color-secondary-300: 147 197 253;
+    --color-secondary-400: 96 165 250;
+    --color-secondary-500: 59 130 246;
+    --color-secondary-600: 37 99 235;
+    --color-secondary-700: 29 78 216;
+    --color-secondary-800: 30 64 175;
+    --color-secondary-900: 30 58 138;
+    
+    --color-accent-50: 253 242 248;
+    --color-accent-100: 252 231 243;
+    --color-accent-200: 251 207 232;
+    --color-accent-300: 249 168 212;
+    --color-accent-400: 244 114 182;
+    --color-accent-500: 236 72 153;
+    --color-accent-600: 219 39 119;
+    --color-accent-700: 190 24 93;
+    --color-accent-800: 157 23 77;
+    --color-accent-900: 131 24 67;
+  }
+
+  html {
+    @apply antialiased scroll-smooth;
+  }
+  
+  body {
+    @apply text-gray-900 bg-gradient-to-br from-gray-50 to-gray-100;
+    perspective: 1000px;
+  }
+}
+
+@layer components {
+  /* 3D Effects */
+  .transform-style-preserve-3d {
+    transform-style: preserve-3d;
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  
+  /* Floating Icons Animation */
+  .floating-icons {
+    @apply fixed top-0 left-0 w-full h-full pointer-events-none;
+  }
+  
+  .floating-icon {
+    @apply absolute text-gray-200 opacity-20;
+    animation: float 15s infinite linear;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 0.2;
+    }
+    100% {
+      transform: translateY(-100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+  
+  /* Auth Card Flip */
+  .auth-card {
+    perspective: 2000px;
+  }
+  
+  .auth-card.flipped .auth-card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .auth-card-inner {
+    transition: transform 0.8s;
+  }
+  
+  .auth-face-back {
+    transform: rotateY(180deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* 3D Logo Effect */
+  .logo-3d span {
+    @apply inline-block;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .logo-3d:hover span {
+    transform: translateY(-3px) rotateX(20deg);
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 px-6 py-3 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:from-primary-600 hover:to-primary-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  /* Inputs */
+  .input-field {
+    @apply mt-1 block w-full rounded-xl border-gray-200 bg-white px-4 py-3 text-sm shadow-sm transition-all duration-200 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-50 disabled:text-gray-500;
+  }
+  
+  .input-wrapper {
+    @apply relative;
+  }
+  
+  .input-icon {
+    @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
+  }
+  
+  .input-field.with-icon {
+    @apply pl-10;
+  }
+  
+  /* Cards */
+  .stats-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .stats-card:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .icon-circle {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-xl;
+  }
+  
+  /* Progress Bar */
+  .progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-2;
+  }
+  
+  .progress-fill {
+    @apply h-2 rounded-full;
+  }
+  
+  /* Category Tabs */
+  .category-tab {
+    @apply px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-primary-600 hover:border-primary-500 transition-colors;
+  }
+  
+  .category-tab.active {
+    @apply text-primary-600 border-primary-500;
+  }
+  
+  /* Item Card */
+  .item-card {
+    @apply bg-white rounded-xl shadow-md p-5 transition-all duration-300 hover:shadow-lg border-l-4;
+  }
+  
+  .item-card.unpacked {
+    @apply border-yellow-500;
+  }
+  
+  .item-card.packed {
+    @apply border-green-500;
+  }
+  
+  .item-card.delivered {
+    @apply border-blue-500;
+  }
+  
+  /* Status Badges */
+  .status-badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .status-badge.unpacked {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .status-badge.packed {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .status-badge.delivered {
+    @apply bg-blue-100 text-blue-800;
+  }
+  
+  /* Avatar */
+  .avatar-stack img {
+    @apply w-8 h-8 rounded-full border-2 border-white;
+  }
+  
+  .avatar-wrapper {
+    @apply relative;
+  }
+  
+  .status-dot {
+    @apply absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white;
+  }
+  
+  /* Modal */
+  .modal-3d {
+    perspective: 2000px;
+  }
+  
+  .modal-content {
+    transform: translateZ(50px);
+  }
+  
+  .modal-face {
+    @apply w-full h-full;
+  }
+  
+  .modal-face-back {
+    transform: rotateY(180deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .modal-content.flipped .modal-inner {
+    transform: rotateY(180deg);
+  }
+  
+  /* Role Selector */
+  .role-option {
+    @apply border border-gray-200 rounded-lg p-3 flex flex-col items-center justify-center cursor-pointer transition-colors;
+  }
+  
+  .role-option i {
+    @apply text-2xl mb-2;
+  }
+  
+  /* Notifications */
+  .notification-badge {
+    @apply absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center;
+  }
+  
+  /* Animation Classes */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+} 
