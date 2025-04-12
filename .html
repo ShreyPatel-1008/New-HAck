@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PackPal - Smart Packing List Manager</title>
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen overflow-x-hidden">
+    <!-- 3D Background Element -->
+    <div id="3d-container" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+    
+    <!-- Animated Floating Icons -->
+    <div class="floating-icons">
+        <i class="floating-icon fas fa-suitcase"></i>
+        <i class="floating-icon fas fa-tshirt"></i>
+        <i class="floating-icon fas fa-laptop"></i>
+        <i class="floating-icon fas fa-toothbrush"></i>
+        <i class="floating-icon fas fa-passport"></i>
+    </div>
+
+    <div id="app">
+        <!-- Login/Signup Form with 3D Effects -->
+        <div id="auth-page" class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+            <div class="auth-card max-w-md w-full space-y-8 transform-style-preserve-3d">
+                <div class="auth-card-inner relative w-full h-full transition-transform duration-1000">
+                    <!-- Front Face - Login -->
+                    <div class="auth-face auth-face-front bg-white rounded-3xl shadow-2xl p-8 backface-hidden">
+                        <div class="text-center">
+                            <div class="logo-3d mb-4">
+                                <span class="text-primary-600">P</span>
+                                <span class="text-secondary-500">A</span>
+                                <span class="text-accent-400">C</span>
+                                <span class="text-primary-600">K</span>
+                                <span class="text-secondary-500">P</span>
+                                <span class="text-accent-400">A</span>
+                                <span class="text-primary-600">L</span>
+                            </div>
+                            <h2 class="text-3xl font-bold tracking-tight text-gray-900">Welcome Back!</h2>
+                            <p class="mt-2 text-sm text-gray-600">
+                                Sign in to manage your packing lists
+                            </p>
+                        </div>
+                        <form id="login-form" class="mt-8 space-y-6">
+                            <div class="rounded-md shadow-sm space-y-4">
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-envelope input-icon"></i>
+                                        <input id="email" name="email" type="email" required class="input-field with-icon" placeholder="Enter your email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        <input id="password" name="password" type="password" required class="input-field with-icon" placeholder="Enter your password">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="login-error-message" class="hidden mt-1 text-sm text-red-600"></div>
+                            <div>
+                                <button type="submit" class="btn-primary w-full py-3 rounded-xl">
+                                    <i class="fas fa-sign-in-alt mr-2"></i> Sign in
+                                </button>
+                            </div>
+                        </form>
+                        <div class="mt-6 text-center">
+                            <button id="switch-to-signup" class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                                Don't have an account? <span class="underline">Sign up</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Back Face - Signup -->
+                    <div class="auth-face auth-face-back bg-white rounded-3xl shadow-2xl p-8 backface-hidden">
+                        <div class="text-center">
+                            <div class="logo-3d mb-4">
+                                <span class="text-primary-600">P</span>
+                                <span class="text-secondary-500">A</span>
+                                <span class="text-accent-400">C</span>
+                                <span class="text-primary-600">K</span>
+                                <span class="text-secondary-500">P</span>
+                                <span class="text-accent-400">A</span>
+                                <span class="text-primary-600">L</span>
+                            </div>
+                            <h2 class="text-3xl font-bold tracking-tight text-gray-900">Create Account</h2>
+                            <p class="mt-2 text-sm text-gray-600">
+                                Join PackPal to streamline your group packing
+                            </p>
+                        </div>
+                        <form id="signup-form" class="mt-8 space-y-6">
+                            <div class="rounded-md shadow-sm space-y-4">
+                                <div class="form-group">
+                                    <label for="signup-name" class="form-label">Full Name</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-user input-icon"></i>
+                                        <input id="signup-name" name="name" type="text" required class="input-field with-icon" placeholder="Your name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="signup-email" class="form-label">Email address</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-envelope input-icon"></i>
+                                        <input id="signup-email" name="email" type="email" required class="input-field with-icon" placeholder="Enter your email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="signup-password" class="form-label">Password</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        <input id="signup-password" name="password" type="password" required class="input-field with-icon" placeholder="Create password">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="signup-role" class="form-label">I'm joining as</label>
+                                    <div class="role-selector grid grid-cols-2 gap-3 mt-2">
+                                        <input type="radio" id="role-owner" name="role" value="owner" class="hidden peer">
+                                        <label for="role-owner" class="role-option peer-checked:border-primary-500 peer-checked:bg-primary-50">
+                                            <i class="fas fa-crown text-yellow-500"></i>
+                                            <span>Owner</span>
+                                        </label>
+                                        <input type="radio" id="role-member" name="role" value="member" class="hidden peer" checked>
+                                        <label for="role-member" class="role-option peer-checked:border-primary-500 peer-checked:bg-primary-50">
+                                            <i class="fas fa-user text-blue-500"></i>
+                                            <span>Member</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="signup-error-message" class="hidden mt-1 text-sm text-red-600"></div>
+                            <div>
+                                <button type="submit" class="btn-primary w-full py-3 rounded-xl">
+                                    <i class="fas fa-user-plus mr-2"></i> Create Account
+                                </button>
+                            </div>
+                        </form>
+                        <div class="mt-6 text-center">
+                            <button id="switch-to-login" class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                                Already have an account? <span class="underline">Sign in</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App (hidden by default) -->
+        <div id="main-app" class="hidden">
+            <!-- 3D Animated Header -->
+            <header class="bg-gradient-to-r from-primary-600 to-secondary-500 text-white shadow-lg">
+                <div class="container mx-auto px-4 py-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <div class="logo-3d text-2xl font-bold">
+                                <span>P</span>
+                                <span>A</span>
+                                <span>C</span>
+                                <span>K</span>
+                                <span>P</span>
+                                <span>A</span>
+                                <span>L</span>
+                            </div>
+                            <div class="group-selector relative">
+                                <button id="current-group" class="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-all">
+                                    <span class="font-medium">Summer Trip to Hawaii</span>
+                                    <i class="fas fa-chevron-down text-xs transition-transform group-selector-open:rotate-180"></i>
+                                </button>
+                                <div id="group-dropdown" class="hidden absolute z-10 mt-2 w-56 bg-white rounded-xl shadow-lg py-1">
+                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Summer Trip to Hawaii</a>
+                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Business Conference</a>
+                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Family Vacation</a>
+                                    <div class="border-t border-gray-200 my-1"></div>
+                                    <a href="#" class="block px-4 py-2 text-primary-600 hover:bg-gray-100">
+                                        <i class="fas fa-plus mr-2"></i> New Group
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button id="notifications-btn" class="relative p-2 rounded-full hover:bg-white/20 transition-colors">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                            <div class="user-dropdown relative">
+                                <button class="flex items-center space-x-2">
+                                    <div class="avatar-wrapper">
+                                        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                                        <span class="status-dot bg-green-500"></span>
+                                    </div>
+                                    <span class="font-medium hidden md:inline">John Doe</span>
+                                </button>
+                                <div class="user-dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                                    <div class="border-t border-gray-200 my-1"></div>
+                                    <button id="logout-btn" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Sign out</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content with 3D Card Effects -->
+            <main class="container mx-auto px-4 py-8">
+                <!-- Dashboard Overview -->
+                <div class="dashboard-overview grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="stats-card bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-transform">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Total Items</p>
+                                <h3 class="text-3xl font-bold mt-1">42</h3>
+                            </div>
+                            <div class="icon-circle bg-primary-100 text-primary-600">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green-500" style="width: 75%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">75% packed</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-transform">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Group Members</p>
+                                <h3 class="text-3xl font-bold mt-1">8</h3>
+                            </div>
+                            <div class="icon-circle bg-secondary-100 text-secondary-600">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="avatar-stack flex -space-x-2">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg" class="w-8 h-8 rounded-full border-2 border-white">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-8 h-8 rounded-full border-2 border-white">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-8 h-8 rounded-full border-2 border-white">
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-bold">+5</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-transform">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Days Remaining</p>
+                                <h3 class="text-3xl font-bold mt-1">14</h3>
+                            </div>
+                            <div class="icon-circle bg-accent-100 text-accent-600">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-xs text-gray-500">Trip starts: Jun 15, 2023</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-transform">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Recent Activity</p>
+                                <h3 class="text-2xl font-bold mt-1">5 New</h3>
+                            </div>
+                            <div class="icon-circle bg-purple-100 text-purple-600">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-xs text-gray-500">Sarah packed 3 items</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Packing List Section -->
+                <div class="packing-list-section bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="list-header bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-gray-800">Packing List</h2>
+                        <div class="flex space-x-3">
+                            <button id="export-pdf" class="btn-secondary px-4 py-2 rounded-lg">
+                                <i class="fas fa-file-pdf mr-2"></i> Export PDF
+                            </button>
+                            <button id="add-item-btn" class="btn-primary px-4 py-2 rounded-lg">
+                                <i class="fas fa-plus mr-2"></i> Add Item
+                            </button>
+                            <button id="use-template" class="btn-secondary px-4 py-2 rounded-lg">
+                                <i class="fas fa-clone mr-2"></i> Use Template
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Tabs -->
+                    <div class="category-tabs flex overflow-x-auto px-6 bg-gray-50 border-b border-gray-200">
+                        <button class="category-tab active" data-category="all">All Items</button>
+                        <button class="category-tab" data-category="clothing">Clothing</button>
+                        <button class="category-tab" data-category="toiletries">Toiletries</button>
+                        <button class="category-tab" data-category="electronics">Electronics</button>
+                        <button class="category-tab" data-category="documents">Documents</button>
+                        <button class="category-tab" data-category="other">Other</button>
+                    </div>
+                    
+                    <!-- Items Container -->
+                    <div id="items-container" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Items will be loaded here dynamically -->
+                    </div>
+                </div>
+            </main>
+
+            <!-- 3D Modal for Add Item -->
+            <div id="add-item-modal" class="modal-3d hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+                <div class="modal-content bg-white rounded-2xl shadow-xl w-full max-w-md transform-style-preserve-3d">
+                    <div class="modal-inner relative w-full h-full transition-transform duration-500">
+                        <!-- Front Face - Basic Info -->
+                        <div class="modal-face modal-face-front p-6 backface-hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-gray-900">Add New Item</h3>
+                                <button class="modal-close p-2 rounded-full hover:bg-gray-100">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <form id="add-item-form" class="space-y-4">
+                                <div class="form-group">
+                                    <label for="item-name" class="form-label">Item Name</label>
+                                    <input id="item-name" name="name" type="text" required class="input-field" placeholder="e.g. Passport, Toothbrush">
+                                </div>
+                                <div class="form-group">
+                                    <label for="item-category" class="form-label">Category</label>
+                                    <select id="item-category" name="category" class="input-field">
+                                        <option value="clothing">Clothing</option>
+                                        <option value="toiletries">Toiletries</option>
+                                        <option value="electronics">Electronics</option>
+                                        <option value="documents">Documents</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="item-quantity" class="form-label">Quantity</label>
+                                    <input id="item-quantity" name="quantity" type="number" min="1" value="1" class="input-field">
+                                </div>
+                                <div class="pt-4">
+                                    <button type="button" id="next-to-details" class="btn-primary w-full py-3 rounded-xl">
+                                        Next: Assign Details <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Back Face - Assignment Details -->
+                        <div class="modal-face modal-face-back p-6 backface-hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-gray-900">Item Details</h3>
+                                <button class="modal-back p-2 rounded-full hover:bg-gray-100">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                            </div>
+                            <form class="space-y-4">
+                                <div class="form-group">
+                                    <label for="item-assignee" class="form-label">Assign To</label>
+                                    <select id="item-assignee" name="assignee" class="input-field">
+                                        <option value="">No one (group item)</option>
+                                        <option value="1">John Doe</option>
+                                        <option value="2">Sarah Smith</option>
+                                        <option value="3">Mike Johnson</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="item-due" class="form-label">Required By</label>
+                                    <input id="item-due" name="due" type="date" class="input-field">
+                                </div>
+                                <div class="form-group">
+                                    <label for="item-notes" class="form-label">Notes</label>
+                                    <textarea id="item-notes" name="notes" rows="3" class="input-field" placeholder="Any special instructions..."></textarea>
+                                </div>
+                                <div class="pt-4 flex space-x-3">
+                                    <button type="button" class="btn-secondary w-full py-3 rounded-xl">
+                                        <i class="fas fa-arrow-left mr-2"></i> Back
+                                    </button>
+                                    <button type="submit" class="btn-primary w-full py-3 rounded-xl">
+                                        Add Item <i class="fas fa-check ml-2"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
